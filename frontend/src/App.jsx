@@ -2,7 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './Login/Login.jsx';
 import Registro from './Registro/Registro.jsx';
 import Principal from './Seccion_principal/Principal.jsx';
-import React from 'react';
+import "./App.css";
+import React from "react";
 function App() {
   return (
     <Router>
