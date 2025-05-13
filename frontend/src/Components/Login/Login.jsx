@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import fondo from "../assets/fondo.jpg"; // Asegúrate de que la ruta sea correcta
+import fondo from "../../assets/fondo.jpg"; // Asegúrate de que la ruta sea correcta
 import {
   faUser,
   faLock,
