@@ -16,7 +16,7 @@ const Registro = () => {
     const renderCaptcha = () => {
       if (window.grecaptcha && recaptchaRef.current) {
         window.grecaptcha.render(recaptchaRef.current, {
-          sitekey: "6LcmxTcrAAAAACNkiBJ2JqUzGBCJTV5NLppoztS4", //
+          sitekey: "6LcmxTcrAAAAACNkiBJ2JqUzGBCJTV5NLppoztS4",
           callback: (token) => {
             console.log("reCAPTCHA token:", token);
             setRecaptchaToken(token);
@@ -25,7 +25,6 @@ const Registro = () => {
       }
     };
 
-    // Esperar a que grecaptcha esté lista
     if (window.grecaptcha) {
       window.grecaptcha.ready(renderCaptcha);
     } else {
@@ -33,7 +32,7 @@ const Registro = () => {
     }
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!recaptchaToken) {
@@ -41,8 +40,49 @@ const Registro = () => {
       return;
     }
 
-    // Aquí puedes enviar el token y demás datos al backend
-    console.log("Formulario enviado con token:", recaptchaToken);
+    const form = e.target;
+    const nombre = form.nombre.value;
+    const usuario = form.usuario.value;
+    const email = form.email.value;
+    const contrasena = form.contrasena.value;
+    const confirmar = form.confirmarcontrasena.value;
+
+    if (contrasena !== confirmar) {
+      alert("Las contraseñas no coinciden.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/App/registrar_usuario/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nombre,
+            usuario,
+            email,
+            contrasena,
+            //recaptcha: recaptchaToken,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(data.mensaje);
+        form.reset();
+        setRecaptchaToken("");
+      } else {
+        alert(data.error || "Error al registrar usuario.");
+      }
+    } catch (error) {
+      alert("Error de red al registrar usuario.");
+      console.error(error);
+    }
   };
 
   return (
@@ -59,7 +99,6 @@ const Registro = () => {
               Registrar Usuario
             </h2>
             <form className="w-full space-y-3" onSubmit={handleSubmit}>
-              {/* Nombre y Apellido */}
               <div className="relative">
                 <FontAwesomeIcon
                   icon={faPerson}
@@ -74,7 +113,6 @@ const Registro = () => {
                 />
               </div>
 
-              {/* Usuario */}
               <div className="relative">
                 <FontAwesomeIcon
                   icon={faUser}
@@ -89,7 +127,6 @@ const Registro = () => {
                 />
               </div>
 
-              {/* Email */}
               <div className="relative">
                 <FontAwesomeIcon
                   icon={faEnvelope}
@@ -104,7 +141,6 @@ const Registro = () => {
                 />
               </div>
 
-              {/* Contraseña */}
               <div className="relative">
                 <FontAwesomeIcon
                   icon={faKey}
@@ -119,7 +155,6 @@ const Registro = () => {
                 />
               </div>
 
-              {/* Confirmar Contraseña */}
               <div className="relative">
                 <FontAwesomeIcon
                   icon={faKey}
@@ -134,7 +169,6 @@ const Registro = () => {
                 />
               </div>
 
-              {/* ReCAPTCHA */}
               <div className="flex justify-center">
                 <div ref={recaptchaRef}></div>
               </div>
