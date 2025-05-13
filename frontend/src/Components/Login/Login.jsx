@@ -74,6 +74,13 @@ const Login = () => {
             </button>
             <div className="mt-4 text-center">
               <a
+                href="/registro"
+                className="text-sm text-gray-700 hover:underline"
+              >
+                Registrarse
+              </a>
+              <span className="mx-2 text-gray-400">|</span>
+              <a
                 href="/forgotPassword"
                 className="text-sm text-gray-700 hover:underline"
               >
