@@ -180,9 +180,9 @@ const Principal = () => {
         </div>
       </header>
 
-      <main className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <main className="p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Columna Buscar videos */}
-        <section className="bg-white p-4 rounded shadow">
+        <section className="bg-white p-4 md:col-span-3 rounded shadow">
           <h2 className="text-xl font-semibold mb-2">Buscar videos</h2>
 
           {/* Reproductor */}
@@ -190,7 +190,7 @@ const Principal = () => {
             <div className="mb-4">
               <iframe
                 src={`https://www.youtube.com/embed/${selectedVideoId}`} // URL del video
-                className="w-full h-64 md:h-80 rounded"
+                className="w-full h-64 md:h-80 rounded max-h-[400px]"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
@@ -264,7 +264,7 @@ const Principal = () => {
         </section>
 
         {/* Columna derecha: favoritos */}
-        <section className="bg-white p-4 rounded shadow">
+        <section className="bg-white p-4 rounded shadow md:col-span-1">
           <h2 className="text-xl font-semibold mb-2">Favoritos</h2>
           <input
             type="text"
@@ -274,7 +274,7 @@ const Principal = () => {
             className="w-full p-2 border border-gray-300 rounded mb-4"
           />
 
-          <ul className="space-y-2 max-h-[400px] overflow-y-auto">
+          <ul className="space-y-2 ">
             {filteredFavorites.map(
               (
                 video // Mapeo de favoritos

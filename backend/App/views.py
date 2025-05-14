@@ -3,6 +3,8 @@ from django.http import JsonResponse
 from django.views import View
 from .models import Usuario, Favoritos
 from django.contrib.auth.hashers import make_password, check_password
+from django.core.mail import send_mail
+
 import json
 
 
@@ -149,3 +151,24 @@ def eliminar_favorito(request):
             return JsonResponse({'error': 'No encontrado'}, status=404)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
+        
+
+@csrf_exempt
+def recuperar_contrasena(request):
+    if request.method == "POST":
+        body = json.loads(request.body)
+        email = body.get("email")
+    try:
+        user = Usuario.objects.get(email=email)
+        # Aquí deberías generar y enviar un token de recuperación.
+        # Por simplicidad, solo enviamos un correo de prueba:
+        send_mail(
+            'Recuperación de contraseña',
+            'Haz clic aquí para restablecer tu contraseña: http://localhost:3000/',
+            'noreply@tuapp.com',
+            [email],
+            fail_silently=False,
+        )
+        return JsonResponse({'message': 'Correo enviado'})
+    except Usuario.DoesNotExist:
+        return JsonResponse({'error': 'Correo no registrado'}, status=400)

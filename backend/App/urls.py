@@ -9,4 +9,5 @@ urlpatterns = [
     path('guardar_favorito/', views.guardar_favorito, name='guardar_favorito'),
     path('obtener_favoritos/', views.obtener_favoritos, name='obtener_favoritos'),
     path('eliminar_favorito/', views.eliminar_favorito, name='eliminar_favorito'),
+    path('recuperar_contrasena/', views.recuperar_contrasena, name='recuperar_contrasena'),
 ]

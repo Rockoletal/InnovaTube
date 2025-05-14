@@ -124,7 +124,7 @@ const Login = () => {
               </a>
               <span className="mx-2 text-gray-400">|</span>
               <a
-                href="/forgotPassword"
+                href="/recuperar-password"
                 className="text-sm text-gray-700 hover:underline"
               >
                 ¿Olvidaste tu contraseña?
