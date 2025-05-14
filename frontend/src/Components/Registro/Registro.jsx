@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import fondo from "../../assets/fondo.jpg";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPerson,
@@ -9,6 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 const Registro = () => {
+  const navigate = useNavigate();
   const recaptchaRef = useRef(null);
   const [recaptchaToken, setRecaptchaToken] = useState("");
 
@@ -76,6 +78,7 @@ const Registro = () => {
         alert(data.mensaje);
         form.reset();
         setRecaptchaToken("");
+        navigate("/");
       } else {
         alert(data.error || "Error al registrar usuario.");
       }
@@ -175,7 +178,7 @@ const Registro = () => {
 
               <button
                 type="submit"
-                className="w-full py-3 bg-green-700 text-white rounded-md hover:bg-green-800 transition-all text-lg"
+                className="w-full py-3 bg-red-600 text-white rounded-md hover:bg-red-800 transition-all text-lg"
               >
                 Registrar Usuario
               </button>

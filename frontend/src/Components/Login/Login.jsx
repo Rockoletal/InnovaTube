@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import fondo from "../../assets/fondo.jpg"; // Asegúrate de que la ruta sea correcta
+import fondo from "../../assets/fondo.jpg";
 import {
   faUser,
   faLock,
@@ -9,17 +10,52 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 const Login = () => {
-  // Estado para mostrar u ocultar la contraseña
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    usuario: "",
+    contrasena: "",
+  });
+  const [error, setError] = useState("");
 
-  // Función para alternar la visibilidad dela contraseña
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  // Función para manejar el inicio de sesión
-  const handleLogin = (e) => {
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/App/login/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Guardar datos del usuario en el localStorage
+        console.log("Login exitoso:", data);
+        localStorage.setItem("userdata", data.usuario.nombre);
+        // Guardar token, redirigir, etc.
+        alert("Inicio de sesión exitoso");
+        navigate("/principal");
+      } else {
+        const errorData = await response.json();
+        setError(errorData.error || "Credenciales incorrectas");
+      }
+    } catch (err) {
+      console.error("Error al iniciar sesión:", err);
+      setError("Error del servidor");
+    }
   };
 
   return (
@@ -34,6 +70,9 @@ const Login = () => {
             Inicio de sesión
           </h2>
           <form className="w-full space-y-6" onSubmit={handleLogin}>
+            {error && (
+              <div className="text-red-600 text-sm text-center">{error}</div>
+            )}
             <div className="relative">
               <FontAwesomeIcon
                 icon={faUser}
@@ -43,8 +82,9 @@ const Login = () => {
                 className="w-full px-12 py-3 border border-gray-300 rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-green-600"
                 type="text"
                 placeholder="Nombre de usuario o correo electrónico"
-                //value={}
-                name="Usuario"
+                name="usuario"
+                value={formData.usuario}
+                onChange={handleChange}
                 required
               />
             </div>
@@ -57,7 +97,9 @@ const Login = () => {
                 className="w-full px-12 py-3 border border-gray-300 rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-green-600"
                 type={showPassword ? "text" : "password"}
                 placeholder="Contraseña"
-                //value={}
+                name="contrasena"
+                value={formData.contrasena}
+                onChange={handleChange}
                 required
               />
               <FontAwesomeIcon
