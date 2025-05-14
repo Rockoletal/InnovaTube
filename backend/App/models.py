@@ -132,3 +132,15 @@ class Usuario(models.Model):
     class Meta:
         managed = False
         db_table = 'usuario'
+
+class Favoritos(models.Model):
+    video_id = models.CharField(max_length=255, unique=True)
+    title = models.CharField(max_length=255)
+    thumbnail = models.URLField()
+    user = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='favoritos')
+
+    class Meta:
+        unique_together = (('video_id', 'user'),) # Evitar duplicados
+        db_table = 'favoritos'
+    
+    

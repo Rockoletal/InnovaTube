@@ -45,6 +45,7 @@ const Login = () => {
         // Guardar datos del usuario en el localStorage
         console.log("Login exitoso:", data);
         localStorage.setItem("userdata", data.usuario.nombre);
+        localStorage.setItem("id_usuario", data.usuario.id);
         // Guardar token, redirigir, etc.
         alert("Inicio de sesión exitoso");
         navigate("/principal");

@@ -16,6 +16,7 @@ const Principal = () => {
   const [favorites, setFavorites] = useState([]);
   const [favoriteSearch, setFavoriteSearch] = useState("");
   const [selectedVideoId, setSelectedVideoId] = useState(null);
+  const usuarioId = localStorage.getItem("id_usuario");
   const navigate = useNavigate(); // Instanciar useNavigate
   const buscarVideos = async () => {
     if (!searchTerm.trim()) return;
@@ -35,19 +36,108 @@ const Principal = () => {
     }
   };
 
+  const guardarFavorito = async (video, usuarioId) => {
+    const favorito = {
+      video_id: video.id.videoId,
+      title: video.snippet.title,
+      thumbnail: video.snippet.thumbnails.default.url,
+      usuario: usuarioId,
+    };
+
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/App/guardar_favorito/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(favorito),
+        }
+      );
+
+      if (!response.ok) throw new Error("Error al guardar el favorito");
+      const data = await response.json();
+      console.log("Favorito guardado:", data);
+    } catch (error) {
+      console.error("Error al guardar favorito:", error);
+    }
+  };
+
+  const obtenerFavoritos = async (usuarioId) => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/App/obtener_favoritos/?usuario=${usuarioId}`
+      );
+      if (!response.ok) throw new Error("Error al obtener favoritos");
+      const data = await response.json();
+
+      // Convertir estructura para que coincida con la de YouTube
+      const transformados = data.map((video) => ({
+        id: { videoId: video.video_id },
+        snippet: {
+          title: video.title,
+          thumbnails: {
+            default: { url: video.thumbnail },
+          },
+        },
+      }));
+
+      setFavorites(transformados);
+    } catch (error) {
+      console.error("Error al obtener favoritos:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (usuarioId) {
+      obtenerFavoritos(usuarioId);
+    }
+  }, [usuarioId]);
+
+  const eliminarFavorito = async (videoId, usuarioId) => {
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/App/eliminar_favorito/",
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ video_id: videoId, usuario: usuarioId }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Error al eliminar favorito");
+
+      const data = await response.json();
+      console.log("Favorito eliminado:", data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("userdata"); // Eliminar datos del usuario
     navigate("/"); // Redirigir a la página de inicio
   };
-  const toggleFavorite = (video) => {
-    // Agregar o quitar de favoritos
-    const exists = favorites.find((f) => f.id.videoId === video.id.videoId); // Verificar si el video ya está en favoritos
-    if (exists) {
-      setFavorites(favorites.filter((f) => f.id.videoId !== video.id.videoId)); // Quitar de favoritos
-    } else {
-      setFavorites([...favorites, video]);
+  const toggleFavorite = async (video) => {
+    const videoId = video.id.videoId;
+    const exists = favorites.find((f) => f.id.videoId === videoId);
+
+    try {
+      if (exists) {
+        await eliminarFavorito(videoId, usuarioId);
+      } else {
+        await guardarFavorito(video, usuarioId);
+      }
+      // Siempre actualiza la lista después
+      await obtenerFavoritos(usuarioId);
+    } catch (error) {
+      console.error("Error al actualizar favoritos:", error);
     }
   };
+
 
   const isFavorite = (
     videoId // Verificar si el video es favorito

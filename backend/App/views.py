@@ -1,7 +1,7 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.views import View
-from .models import Usuario
+from .models import Usuario, Favoritos
 from django.contrib.auth.hashers import make_password, check_password
 import json
 
@@ -82,3 +82,70 @@ def login(request):
             return JsonResponse({'error': 'Datos inválidos'}, status=400)
 
     return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+@csrf_exempt
+def guardar_favorito(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            usuario_id = data.get('usuario')
+            video_id = data.get('video_id')
+            title = data.get('title')
+            thumbnail = data.get('thumbnail')
+
+            if not all([usuario_id, video_id, title, thumbnail]):
+                return JsonResponse({'error': 'Datos incompletos'}, status=400)
+
+            usuario = Usuario.objects.get(id=usuario_id)
+
+            favorito, created = Favoritos.objects.get_or_create(
+                video_id=video_id,
+                user=usuario,
+                defaults={'title': title, 'thumbnail': thumbnail}
+            )
+
+            if not created:
+                return JsonResponse({'message': 'Ya existe'}, status=200)
+
+            return JsonResponse({'message': 'Guardado'}, status=201)
+        except Usuario.DoesNotExist:
+            return JsonResponse({'error': 'Usuario no encontrado'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+@csrf_exempt
+def obtener_favoritos(request):
+    if request.method == 'GET':
+        usuario_id = request.GET.get('usuario')
+        if not usuario_id:
+            return JsonResponse({'error': 'Falta el ID del usuario'}, status=400)
+
+        favoritos = Favoritos.objects.filter(user_id=usuario_id)
+        data = [
+            {
+                'video_id': fav.video_id,
+                'title': fav.title,
+                'thumbnail': fav.thumbnail,
+            }
+            for fav in favoritos
+        ]
+        return JsonResponse(data, safe=False)
+
+@csrf_exempt
+def eliminar_favorito(request):
+    if request.method == 'DELETE':
+        try:
+            data = json.loads(request.body)
+            video_id = data.get('video_id')
+            usuario_id = data.get('usuario')
+
+            if not all([video_id, usuario_id]):
+                return JsonResponse({'error': 'Faltan datos'}, status=400)
+
+            favorito = Favoritos.objects.get(video_id=video_id, user_id=usuario_id)
+            favorito.delete()
+            return JsonResponse({'message': 'Eliminado'}, status=200)
+        except Favoritos.DoesNotExist:
+            return JsonResponse({'error': 'No encontrado'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
