@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import fondo from "../../assets/fondo.jpg";
 
-const API_KEY = "AIzaSyAFCH91yCt97McpYHsf_NFfl1MY8CySme4"; // <-- Usa tu API key
+const API_KEY = "AIzaSyAFCH91yCt97McpYHsf_NFfl1MY8CySme4"; // <-- Reemplaza esto con tu API key
 
 const Principal = () => {
   const [videos, setVideos] = useState([]);
@@ -40,46 +40,46 @@ const Principal = () => {
 
   return (
     <div
-      className="min-h-screen bg-gray-100"
+      className="min-h-screen bg-gray-100 blur:md"
       style={{ backgroundImage: `url(${fondo})`, backgroundSize: "cover" }}
     >
-      <header className="bg-white shadow p-4 flex flex-col md:flex-row justify-between items-center gap-2">
-        <span className="text-xl font-bold">InnovaTube</span>
-        <div className="flex items-center gap-4">
-          <span className="text-gray-700 text-sm">
+      <header className="bg-white shadow p-4 flex justify-between items-center">
+        <span className="text-lg font-semibold">InnovaTube</span>
+        <div>
+          <span className="text-gray-700">
             Bienvenido, "{localStorage.getItem("userdata")}"
           </span>
-          <button className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-800 transition">
+          <button className="ml-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-800 transition">
             Cerrar sesión
           </button>
         </div>
       </header>
 
-      <main className="p-4 grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Buscador y listado de videos */}
-        <section className="bg-white p-4 rounded shadow lg:col-span-2 flex flex-col">
+      <main className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Listado de videos */}
+        <section className="bg-white p-4 rounded shadow">
           <h2 className="text-xl font-semibold mb-2">Buscar videos</h2>
-          <div className="flex mb-4 flex-col sm:flex-row gap-2">
+          <div className="flex mb-4">
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Buscar..."
-              className="w-full p-2 border border-gray-300 rounded sm:rounded-l sm:rounded-r-none"
+              className="w-full p-2 border border-gray-300 rounded-l"
             />
             <button
               onClick={buscarVideos}
-              className="bg-blue-500 text-white px-4 py-2 rounded sm:rounded-r sm:rounded-l-none hover:bg-blue-700"
+              className="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-700"
             >
               Buscar
             </button>
           </div>
 
-          <ul className="space-y-2 overflow-y-auto max-h-[500px]">
+          <ul className="space-y-2 max-h-[400px] overflow-y-auto">
             {videos.map((video) => (
               <li
                 key={video.id.videoId}
-                className="flex items-center p-2 border rounded gap-2"
+                className="flex items-center p-2 border rounded space-x-2"
               >
                 <img
                   src={video.snippet.thumbnails.medium.url}
@@ -87,7 +87,7 @@ const Principal = () => {
                   className="w-24 h-16 object-cover rounded"
                 />
                 <div className="flex-1">
-                  <p className="text-sm font-semibold line-clamp-2">
+                  <p className="text-sm font-semibold truncate">
                     {video.snippet.title}
                   </p>
                 </div>
@@ -97,7 +97,7 @@ const Principal = () => {
                     isFavorite(video.id.videoId)
                       ? "text-yellow-500"
                       : "text-blue-500"
-                  } hover:underline whitespace-nowrap`}
+                  } hover:underline`}
                 >
                   {isFavorite(video.id.videoId) ? "★ Quitar" : "☆ Favorito"}
                 </button>
@@ -107,7 +107,7 @@ const Principal = () => {
         </section>
 
         {/* Listado de favoritos */}
-        <section className="bg-white p-4 rounded shadow flex flex-col">
+        <section className="bg-white p-4 rounded shadow">
           <h2 className="text-xl font-semibold mb-2">Favoritos</h2>
           <input
             type="text"
@@ -117,25 +117,18 @@ const Principal = () => {
             className="w-full p-2 border border-gray-300 rounded mb-4"
           />
 
-          <ul className="space-y-2 overflow-y-auto max-h-[500px]">
+          <ul className="space-y-2 max-h-[400px] overflow-y-auto">
             {filteredFavorites.map((video) => (
               <li
                 key={video.id.videoId}
-                className="flex items-center gap-2 p-2 border rounded"
+                className="flex justify-between items-center p-2 border rounded"
               >
-                <img
-                  src={video.snippet.thumbnails.default.url}
-                  alt={video.snippet.title}
-                  className="w-16 h-10 object-cover rounded"
-                />
-                <span className="text-sm flex-1 truncate">
-                  {video.snippet.title}
-                </span>
+                <span className="truncate w-4/5">{video.snippet.title}</span>
                 <button
                   onClick={() => toggleFavorite(video)}
                   className="text-red-500 hover:underline"
                 >
-                  ❌
+                  ❌ Quitar
                 </button>
               </li>
             ))}
