@@ -119,7 +119,7 @@ const Principal = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("userdata"); // Eliminar datos del usuario
-    navigate("/"); // Redirigir a la página de inicio
+    navigate("/InnovaTube"); // Redirigir a la página de inicio
   };
   const toggleFavorite = async (video) => {
     const videoId = video.id.videoId;

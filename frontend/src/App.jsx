@@ -9,7 +9,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/InnovaTube" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
         <Route path="/principal" element={<Principal />} />
         <Route path="/recuperar-password" element={<RecuperarPassword />} />
