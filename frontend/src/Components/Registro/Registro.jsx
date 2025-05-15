@@ -56,7 +56,7 @@ const Registro = () => {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/App/registrar_usuario/",
+        "http://backend-innovatube-production-f7a0.up.railway.app/App/registrar_usuario/",
         {
           method: "POST",
           headers: {

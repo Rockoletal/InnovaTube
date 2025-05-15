@@ -46,7 +46,7 @@ const Principal = () => {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/App/guardar_favorito/",
+        "http://backend-innovatube-production-f7a0.up.railway.app/App/guardar_favorito/",
         {
           method: "POST",
           headers: {
@@ -67,7 +67,7 @@ const Principal = () => {
   const obtenerFavoritos = async (usuarioId) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/App/obtener_favoritos/?usuario=${usuarioId}`
+        `http://backend-innovatube-production-f7a0.up.railway.app/App/obtener_favoritos/?usuario=${usuarioId}`
       );
       if (!response.ok) throw new Error("Error al obtener favoritos");
       const data = await response.json();
@@ -98,7 +98,7 @@ const Principal = () => {
   const eliminarFavorito = async (videoId, usuarioId) => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/App/eliminar_favorito/",
+        "http://backend-innovatube-production-f7a0.up.railway.app/App/eliminar_favorito/",
         {
           method: "DELETE",
           headers: {
